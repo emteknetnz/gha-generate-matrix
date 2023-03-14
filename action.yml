@@ -40,6 +40,9 @@ inputs:
   js:
     type: boolean
     default: true
+  branch:
+    type: string
+    default: ''
 
 # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 outputs:
@@ -83,10 +86,24 @@ runs:
         echo "FETCH_DEPTH is $FETCH_DEPTH"
         echo "::set-output name=fetch-depth::$FETCH_DEPTH"
 
+    - name: Validate branch
+      shell: bash
+      env:
+        BRANCH: ${{ inputs.branch }}
+      run: |
+        if [[ $BRANCH != "" ]]; then
+          git check-ref-format "heads/$BRANCH" > /dev/null
+          if [[ $? != "0" ]]; then
+            echo "Invalid branch name"
+            exit 1
+          fi
+        fi
+
     - name: Checkout code
       uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # v2.4.2
       with:
         fetch-depth: ${{ steps.set-fetch-depth.outputs.fetch-depth }}
+        ref: ${{ inputs.branch }}
 
     - name: Install PHP
       uses: shivammathur/setup-php@3eda58347216592f618bb1dff277810b6698e4ca # v2.19.1
