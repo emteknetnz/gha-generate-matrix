@@ -417,11 +417,11 @@ class JobCreator
             } else {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
                 if ($ext === $extension) {
-                    $featureFiles[] = "$dir/$file";
+                    $filePaths[] = "$dir/$file";
                 }
             }
         }
-        return $featureFiles;
+        return $filePaths;
     }
 
     private function buildDynamicMatrix(
