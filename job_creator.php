@@ -475,7 +475,7 @@ class JobCreator
         // endtoend / behat
         if ($run['endtoend'] && file_exists('behat.yml')) {
             $jobTags = [];
-            $filepaths = $this->getFilesMatchingExtension(__DIR__, 'feature');
+            $filepaths = $this->getFilesMatchingExtension(getcwd(), 'feature');
             foreach ($filepaths as $filepath) {
                 $contents = file_get_contents($filepath);
                 if (preg_match('#@(job[0-9]+)#', $contents, $matches)) {
