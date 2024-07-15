@@ -660,6 +660,9 @@ class JobCreator
             if ($job['endtoend'] == 'true') {
                 $name[] = 'endtoend';
                 $name[] = $job['endtoend_suite'] ?: 'root';
+                if ($job['endtoend_tag']) {
+                    $name[] = $job['endtoend_tag'];
+                }
             }
             if ($job['js'] == 'true') {
                 $name[] = 'js';
