@@ -402,6 +402,28 @@ class JobCreator
         return $run['phpcoverage'];
     }
 
+    /**
+     * Recursively finds all nested .feature files in a directory
+     */
+    private function getFeatureFiles($dir, &$featureFiles = []): array
+    {
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+            if (is_dir("$dir/$file")) {
+                $this->getFeatureFiles("$dir/$file", $featureFiles);
+            } else {
+                $ext = pathinfo($file, PATHINFO_EXTENSION);
+                if ($ext === 'feature') {
+                    $featureFiles[] = "$dir/$file";
+                }
+            }
+        }
+        return $featureFiles;
+    }
+
     private function buildDynamicMatrix(
         array $matrix,
         array $run,
@@ -452,9 +474,8 @@ class JobCreator
         }
         // endtoend / behat
         if ($run['endtoend'] && file_exists('behat.yml')) {
-            // find any files with the .feature file extension
             $jobTags = [];
-            $filepaths = array_filter(explode("\n", shell_exec("find . | grep .feature$")));
+            $filepaths = $this->getFeatureFiles(__DIR__);
             foreach ($filepaths as $filepath) {
                 $contents = file_get_contents($filepath);
                 if (preg_match('#@(job[0-9]+)#', $contents, $matches)) {
