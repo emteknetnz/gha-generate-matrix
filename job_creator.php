@@ -463,10 +463,12 @@ class JobCreator
             }
             $jobTagsCount = count($jobTags);
             $jobTags = array_unique($jobTags);
-            if ($jobTagsCount !== 0 && $jobTagsCount !== count($filepaths)) {
-                throw new RuntimeException("At least one .feature files missing an @job[0-9]+ tag");
+            if ($jobTagsCount === 0) {
+                $jobTags = [''];
             } else {
-                $jobTags[] = '';
+                if ($jobTagsCount !== count($filepaths)) {
+                    throw new RuntimeException("At least one .feature files missing an @job[0-9]+ tag");
+                }
             }
             foreach ($jobTags as $jobTag) {
                 $graphql3 = !$simpleMatrix && $cmsMajor == '4';
