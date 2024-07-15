@@ -168,6 +168,7 @@ class JobCreator
             'endtoend_config' => '',
             'js' => false,
             'doclinting' => false,
+            'install_in_memory_cache_exts' => false,
             // Needs full setup if installerVersion is set, OR this is a recipe
             'needs_full_setup' => $this->installerVersion !== '' || (isset($this->repoData['type']) && $this->repoData['type'] === 'recipe'),
         ];
@@ -405,7 +406,8 @@ class JobCreator
         array $matrix,
         array $run,
         bool $composerInstall,
-        bool $simpleMatrix
+        bool $simpleMatrix,
+        array $skipPhpunitSuites
     ): array {
         if ($run['phpunit'] && (file_exists('phpunit.xml') || file_exists('phpunit.xml.dist'))) {
             $dom = new DOMDocument();
@@ -418,6 +420,9 @@ class JobCreator
                     continue;
                 }
                 $suite = $testsuite->getAttribute('name');
+                if (in_array($suite, $skipPhpunitSuites)) {
+                    continue;
+                }
                 $matrix = $this->createPhpunitJobs($matrix, $composerInstall, $simpleMatrix, $suite, $run);
             }
             // phpunit.xml has no defined testsuites, or only defaults a "Default"
@@ -535,6 +540,7 @@ class JobCreator
         $composerInstall = false;
         $dynamicMatrix = true;
         $simpleMatrix = false;
+        $skipPhpunitSuites = [];
         foreach ($inputs as $input => $value) {
             if (in_array($input, [
                 'endtoend',
@@ -559,6 +565,9 @@ class JobCreator
                 $simpleMatrix = $this->parseBoolValue($value);
             } else if (in_array($input, ['github_my_ref', 'github_repository', 'parent_branch'])) {
                 continue;
+            } else if ($input === 'phpunit_skip_suites') {
+                // value is a comma-separated string
+                $skipPhpunitSuites = array_map('trim', explode(',', $value));
             } else {
                 throw new LogicException("Unhandled input $input");
             }
@@ -573,7 +582,7 @@ class JobCreator
         }
 
         if ($dynamicMatrix) {
-            $matrix = $this->buildDynamicMatrix($matrix, $run, $composerInstall, $simpleMatrix);
+            $matrix = $this->buildDynamicMatrix($matrix, $run, $composerInstall, $simpleMatrix, $skipPhpunitSuites);
         }
 
         // extra jobs
@@ -643,6 +652,9 @@ class JobCreator
             }
             if ($job['doclinting'] == 'true') {
                 $name[] = 'doclinting';
+            }
+            if ($job['install_in_memory_cache_exts'] == 'true') {
+                $name[] = 'inmemorycache';
             }
             $name[] = $job['name_suffix'];
             $name = array_filter($name);
