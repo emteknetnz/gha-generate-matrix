@@ -470,6 +470,7 @@ class JobCreator
                     throw new RuntimeException("At least one .feature files missing an @job[0-9]+ tag");
                 }
             }
+            sort($jobTags);
             foreach ($jobTags as $jobTag) {
                 $graphql3 = !$simpleMatrix && $cmsMajor == '4';
                 $job = $this->createJob(0, [
