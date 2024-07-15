@@ -403,9 +403,9 @@ class JobCreator
     }
 
     /**
-     * Recursively finds all nested .feature files in a directory
+     * Recursively finds all nested files matching an extension in a directory
      */
-    private function getFeatureFiles($dir, &$featureFiles = []): array
+    private function getFilesMatchingExtension($dir, $extension, &$filePaths = []): array
     {
         $files = scandir($dir);
         foreach ($files as $file) {
@@ -413,10 +413,10 @@ class JobCreator
                 continue;
             }
             if (is_dir("$dir/$file")) {
-                $this->getFeatureFiles("$dir/$file", $featureFiles);
+                $this->getFilesMatchingExtension("$dir/$file", $extension, $filePath);
             } else {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
-                if ($ext === 'feature') {
+                if ($ext === $extension) {
                     $featureFiles[] = "$dir/$file";
                 }
             }
@@ -475,7 +475,7 @@ class JobCreator
         // endtoend / behat
         if ($run['endtoend'] && file_exists('behat.yml')) {
             $jobTags = [];
-            $filepaths = $this->getFeatureFiles(__DIR__);
+            $filepaths = $this->getFilesMatchingExtension(__DIR__, 'feature');
             foreach ($filepaths as $filepath) {
                 $contents = file_get_contents($filepath);
                 if (preg_match('#@(job[0-9]+)#', $contents, $matches)) {
