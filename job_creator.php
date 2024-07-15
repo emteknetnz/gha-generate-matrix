@@ -452,27 +452,47 @@ class JobCreator
         }
         // endtoend / behat
         if ($run['endtoend'] && file_exists('behat.yml')) {
-            $graphql3 = !$simpleMatrix && $cmsMajor == '4';
-            $job = $this->createJob(0, [
-                'endtoend' => true,
-                'endtoend_suite' => 'root',
-                'composer_require_extra' => $graphql3 ? 'silverstripe/graphql:^3' : ''
-            ]);
-            // use minimum version of 7.4 for endtoend because was having apt dependency issues
-            // in CI when using php 7.3:
-            // The following packages have unmet dependencies:
-            // libpcre2-dev : Depends: libpcre2-8-0 (= 10.39-3+ubuntu20.04.1+deb.sury.org+2) but
-            // 10.40-1+ubuntu20.04.1+deb.sury.org+1 is to be installed
-            if ($job['php'] == '7.3') {
-                $job['php'] = '7.4';
+            // find any files with the .feature file extension
+            $jobTags = [];
+            $filepaths = array_filter(explode("\n", shell_exec("find . | grep .feature$")));
+            foreach ($filepaths as $filepath) {
+                $contents = file_get_contents($filepath);
+                if (preg_match('#@(job[0-9]+)#', $contents, $matches)) {
+                    $jobTags[] = $matches[1];
+                }
             }
-            $matrix['include'][] = $job;
-            if (!$simpleMatrix && !$composerInstall) {
-                $matrix['include'][] = $this->createJob(3, [
-                    'db' => DB_MYSQL_80,
+            $jobTagsCount = count($jobTags);
+            $jobTags = array_unique($jobTags);
+            if ($jobTagsCount !== 0 && $jobTagsCount !== count($filepaths)) {
+                throw new RuntimeException("At least one .feature files missing an @job[0-9]+ tag");
+            } else {
+                $jobTags[] = '';
+            }
+            foreach ($jobTags as $jobTag) {
+                $graphql3 = !$simpleMatrix && $cmsMajor == '4';
+                $job = $this->createJob(0, [
                     'endtoend' => true,
-                    'endtoend_suite' => 'root'
+                    'endtoend_suite' => 'root',
+                    'endtoend_tag' => $jobTag,
+                    'composer_require_extra' => $graphql3 ? 'silverstripe/graphql:^3' : '',
                 ]);
+                // use minimum version of 7.4 for endtoend because was having apt dependency issues
+                // in CI when using php 7.3:
+                // The following packages have unmet dependencies:
+                // libpcre2-dev : Depends: libpcre2-8-0 (= 10.39-3+ubuntu20.04.1+deb.sury.org+2) but
+                // 10.40-1+ubuntu20.04.1+deb.sury.org+1 is to be installed
+                if ($job['php'] == '7.3') {
+                    $job['php'] = '7.4';
+                }
+                $matrix['include'][] = $job;
+                if (!$simpleMatrix && !$composerInstall) {
+                    $matrix['include'][] = $this->createJob(3, [
+                        'db' => DB_MYSQL_80,
+                        'endtoend' => true,
+                        'endtoend_suite' => 'root',
+                        'endtoend_tag' => $jobTag,
+                    ]);
+                }
             }
         }
         // javascript tests
