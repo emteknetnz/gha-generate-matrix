@@ -405,7 +405,7 @@ class JobCreator
     /**
      * Recursively finds all nested files matching an extension in a directory
      */
-    private function getFilesMatchingExtension($dir, $extension, &$filePaths = []): array
+    private function getFilesMatchingExtension($dir, $extension, &$filepaths = []): array
     {
         $files = scandir($dir);
         foreach ($files as $file) {
@@ -413,15 +413,15 @@ class JobCreator
                 continue;
             }
             if (is_dir("$dir/$file")) {
-                $this->getFilesMatchingExtension("$dir/$file", $extension, $filePath);
+                $this->getFilesMatchingExtension("$dir/$file", $extension, $filepaths);
             } else {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
                 if ($ext === $extension) {
-                    $filePaths[] = "$dir/$file";
+                    $filepaths[] = "$dir/$file";
                 }
             }
         }
-        return $filePaths;
+        return $filepaths;
     }
 
     private function buildDynamicMatrix(
