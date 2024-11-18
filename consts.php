@@ -3,6 +3,7 @@
 const DB_MYSQL_57 = 'mysql57';
 const DB_MYSQL_57_PDO = 'mysql57pdo';
 const DB_MYSQL_80 = 'mysql80';
+const DB_MYSQL_84 = 'mysql84';
 const DB_PGSQL = 'pgsql';
 const DB_MARIADB = 'mariadb';
 
