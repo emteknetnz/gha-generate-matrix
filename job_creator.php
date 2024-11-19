@@ -311,12 +311,15 @@ class JobCreator
             ]);
         } else {
             $cmsMajor = BranchLogic::getCmsMajor($this->repoData, $this->branch, $this->getComposerJsonContent()) ?: MetaData::LOWEST_SUPPORTED_CMS_MAJOR;
+            $dbsAdded = [];
+            $db = in_array($cmsMajor, ['4', '5']) ? DB_MYSQL_57 : DB_MARIADB;
             $matrix['include'][] = $this->createJob(0, [
                 'composer_args' => '--prefer-lowest',
-                'db' => in_array($cmsMajor, ['4', '5']) ? DB_MYSQL_57 : DB_MARIADB,
+                'db' => $db,
                 'phpunit' => true,
                 'phpunit_suite' => $suite,
             ]);
+            $dbsAdded[] = $db;
             if ($cmsMajor === '4') {
                 if (!$this->doRunPhpCoverage($run)) {
                     // this same mysql pdo test is also created for the phpcoverage job, so only add it here if
@@ -334,10 +337,21 @@ class JobCreator
                     'phpunit_suite' => $suite,
                 ]);
             } else {
-                // phpunit tests for cms 5 are run on php 8.1, 8.2 or 8.3 and mysql 8.0 or mariadb
+                // phpunit tests for cms 5 are run on php 8.1, 8.2 or 8.3 and mysql 8.0, 8.4 or mariadb
                 $phpToDB = $this->generatePhpToDBMap();
+                $lastPhp = null;
                 foreach ($phpToDB as $php => $db) {
                     $matrix['include'][] = $this->createJob($this->getIndexByPHPVersion($php), [
+                        'db' => $db,
+                        'phpunit' => true,
+                        'phpunit_suite' => $suite,
+                    ]);
+                    $dbsAdded[] = $db;
+                    $lastPhp = $php;
+                }
+                $dbNotAdded = array_diff($this->getDBs(), $dbsAdded);
+                foreach ($dbNotAdded as $db) {
+                    $matrix['include'][] = $this->createJob($this->getIndexByPHPVersion($lastPhp), [
                         'db' => $db,
                         'phpunit' => true,
                         'phpunit_suite' => $suite,
@@ -366,6 +380,18 @@ class JobCreator
     }
 
     /**
+     * Return a list of DBS to test against for the current CMS major
+     */
+    private function getDBs()
+    {
+        $cmsMajor = BranchLogic::getCmsMajor($this->repoData, $this->branch, $this->getComposerJsonContent()) ?: MetaData::LOWEST_SUPPORTED_CMS_MAJOR;
+        if ($cmsMajor === '5') {
+            return [DB_MARIADB, DB_MYSQL_80, DB_MYSQL_84];
+        }
+        return [DB_MYSQL_80, DB_MYSQL_84, DB_MARIADB];
+    }
+
+    /**
      * Generate a map of php versions to db versions
      * e.g. [ '8.1' => 'mariadb', '8.2' => 'mysql80' ]
      */
@@ -373,12 +399,7 @@ class JobCreator
     {
         $map = [];
         $phpVersions = $this->getListOfPhpVersionsByBranchName();
-        $cmsMajor = BranchLogic::getCmsMajor($this->repoData, $this->branch, $this->getComposerJsonContent()) ?: MetaData::LOWEST_SUPPORTED_CMS_MAJOR;
-        if ($cmsMajor === '5') {
-            $dbs = [DB_MARIADB, DB_MYSQL_80];
-        } else {
-            $dbs = [DB_MYSQL_80, DB_MARIADB];
-        }
+        $dbs = $this->getDBs();
         foreach ($phpVersions as $key => $phpVersion) {
             if (count($phpVersions) < 3) {
                 $map[$phpVersion] = $dbs[$key];
@@ -387,7 +408,6 @@ class JobCreator
                 $map[$phpVersion] = array_key_exists($key, $dbs) ? $dbs[$key - 1] : DB_MYSQL_80;
             }
         }
-
         return $map;
     }
 
