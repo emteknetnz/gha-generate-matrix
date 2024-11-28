@@ -816,7 +816,7 @@ class JobCreatorTest extends TestCase
                     ],
                     [
                         'installer_version' => '6.x-dev',
-                        'php' => '8.3',
+                        'php' => '8.4',
                         'db' => DB_MYSQL_84,
                         'composer_require_extra' => '',
                         'composer_args' => '',
@@ -832,7 +832,7 @@ class JobCreatorTest extends TestCase
                         'js' => 'false',
                         'doclinting' => 'false',
                         'needs_full_setup' => 'true',
-                        'name' => '8.3 mysql84 phpunit all',
+                        'name' => '8.4 mysql84 phpunit all',
                     ],
                 ]
             ],
@@ -1431,7 +1431,7 @@ class JobCreatorTest extends TestCase
                     ],
                     [
                         'installer_version' => '',
-                        'php' => '8.3',
+                        'php' => '8.4',
                         'db' => DB_MYSQL_84,
                         'composer_require_extra' => '',
                         'composer_args' => '',
@@ -1447,7 +1447,7 @@ class JobCreatorTest extends TestCase
                         'js' => 'false',
                         'doclinting' => 'false',
                         'needs_full_setup' => 'false',
-                        'name' => '8.3 mysql84 phpunit all',
+                        'name' => '8.4 mysql84 phpunit all',
                     ],
                 ],
             ],
@@ -2006,7 +2006,7 @@ class JobCreatorTest extends TestCase
                 [
                     '8.3 prf-low mariadb phpunit all',
                     '8.3 mysql80 phpunit all',
-                    '8.3 mysql84 phpunit all',
+                    '8.4 mysql84 phpunit all',
                 ]
             ],
             'composerupgrade_definedphpversion_framework5' => [
@@ -2041,7 +2041,7 @@ class JobCreatorTest extends TestCase
                 [
                     '8.3 prf-low mariadb phpunit all',
                     '8.3 mysql80 phpunit all',
-                    '8.3 mysql84 phpunit all',
+                    '8.4 mysql84 phpunit all',
                 ]
             ],
             'composerupgrade_nophpversion_framework51' => [
