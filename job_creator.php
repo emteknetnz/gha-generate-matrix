@@ -528,8 +528,9 @@ class JobCreator
                 }
                 $matrix['include'][] = $job;
                 if (!$simpleMatrix && !$composerInstall) {
+                    $db = $cmsMajor == 5 ? DB_MYSQL_80 : DB_MYSQL_84;
                     $matrix['include'][] = $this->createJob(3, [
-                        'db' => DB_MYSQL_80,
+                        'db' => $db,
                         'endtoend' => true,
                         'endtoend_suite' => 'root',
                         'endtoend_tags' => $jobTag,
