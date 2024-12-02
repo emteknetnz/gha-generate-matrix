@@ -258,7 +258,7 @@ class JobCreatorTest extends TestCase
     public function provideCreateJson(): array
     {
         return [
-            // behat without @job1/@job2 test
+            // behat without @job1/@job2 test - cms 5
             [
                 implode("\n", [
                     $this->getGenericYml(),
@@ -391,6 +391,122 @@ class JobCreatorTest extends TestCase
                         'doclinting' => 'false',
                         'needs_full_setup' => 'true',
                         'name' => '8.3 mysql80 endtoend root',
+                    ],
+                ]
+            ],
+            // behat without @job1/@job2 test - cms 6
+            [
+                implode("\n", [
+                    $this->getGenericYml(),
+                    <<<EOT
+                    github_repository: 'myaccount/silverstripe-framework'
+                    github_my_ref: '6'
+                    parent_branch: ''
+                    EOT
+                ]),
+                true,
+                false,
+                false,
+                [
+                    [
+                        'installer_version' => '6.x-dev',
+                        'php' => '8.3',
+                        'db' => DB_MARIADB,
+                        'composer_require_extra' => '',
+                        'composer_args' => '--prefer-lowest',
+                        'name_suffix' => '',
+                        'phpunit' => 'true',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'false',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.3 prf-low mariadb phpunit all',
+                    ],
+                    [
+                        'installer_version' => '6.x-dev',
+                        'php' => '8.3',
+                        'db' => DB_MYSQL_80,
+                        'composer_require_extra' => '',
+                        'composer_args' => '',
+                        'name_suffix' => '',
+                        'phpunit' => 'true',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'false',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.3 mysql80 phpunit all',
+                    ],
+                    [
+                        'installer_version' => '6.x-dev',
+                        'php' => '8.4',
+                        'db' => DB_MYSQL_84,
+                        'composer_require_extra' => '',
+                        'composer_args' => '',
+                        'name_suffix' => '',
+                        'phpunit' => 'true',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'false',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.4 mysql84 phpunit all',
+                    ],
+                    [
+                        'installer_version' => '6.x-dev',
+                        'php' => '8.3',
+                        'db' => DB_MYSQL_80,
+                        'composer_require_extra' => '',
+                        'composer_args' => '',
+                        'name_suffix' => '',
+                        'phpunit' => 'false',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'true',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.3 mysql80 endtoend root',
+                    ],
+                    [
+                        'installer_version' => '6.x-dev',
+                        'php' => '8.4',
+                        'db' => DB_MYSQL_84,
+                        'composer_require_extra' => '',
+                        'composer_args' => '',
+                        'name_suffix' => '',
+                        'phpunit' => 'false',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'true',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.4 mysql84 endtoend root',
                     ],
                 ]
             ],
@@ -816,7 +932,7 @@ class JobCreatorTest extends TestCase
                     ],
                     [
                         'installer_version' => '6.x-dev',
-                        'php' => '8.3',
+                        'php' => '8.4',
                         'db' => DB_MYSQL_84,
                         'composer_require_extra' => '',
                         'composer_args' => '',
@@ -832,7 +948,7 @@ class JobCreatorTest extends TestCase
                         'js' => 'false',
                         'doclinting' => 'false',
                         'needs_full_setup' => 'true',
-                        'name' => '8.3 mysql84 phpunit all',
+                        'name' => '8.4 mysql84 phpunit all',
                     ],
                 ]
             ],
@@ -1431,7 +1547,7 @@ class JobCreatorTest extends TestCase
                     ],
                     [
                         'installer_version' => '',
-                        'php' => '8.3',
+                        'php' => '8.4',
                         'db' => DB_MYSQL_84,
                         'composer_require_extra' => '',
                         'composer_args' => '',
@@ -1447,7 +1563,7 @@ class JobCreatorTest extends TestCase
                         'js' => 'false',
                         'doclinting' => 'false',
                         'needs_full_setup' => 'false',
-                        'name' => '8.3 mysql84 phpunit all',
+                        'name' => '8.4 mysql84 phpunit all',
                     ],
                 ],
             ],
@@ -2006,7 +2122,7 @@ class JobCreatorTest extends TestCase
                 [
                     '8.3 prf-low mariadb phpunit all',
                     '8.3 mysql80 phpunit all',
-                    '8.3 mysql84 phpunit all',
+                    '8.4 mysql84 phpunit all',
                 ]
             ],
             'composerupgrade_definedphpversion_framework5' => [
@@ -2041,7 +2157,7 @@ class JobCreatorTest extends TestCase
                 [
                     '8.3 prf-low mariadb phpunit all',
                     '8.3 mysql80 phpunit all',
-                    '8.3 mysql84 phpunit all',
+                    '8.4 mysql84 phpunit all',
                 ]
             ],
             'composerupgrade_nophpversion_framework51' => [
