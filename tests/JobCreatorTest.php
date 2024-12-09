@@ -1988,16 +1988,16 @@ class JobCreatorTest extends TestCase
             // the `6.0` branches are created - currently only `6` branches exist
             ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/framework' => '6.x-dev'], 'silverstripe-module', '6.x-dev'],
             ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/framework' => '6.0.x-dev'], 'silverstripe-vendormodule', '6.0.x-dev'],
-            ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/framework' => '^6'], 'silverstripe-theme', '6.x-dev'],
-            ['myaccount/silverstripe-somemodule', 'mybranch', ['silverstripe/cms' => '^6'], 'silverstripe-recipe', '6.x-dev'],
-            ['myaccount/silverstripe-somemodule', 'mybranch', ['silverstripe/admin' => '^3'], 'silverstripe-vendormodule', '6.x-dev'],
+            ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/framework' => '^6'], 'silverstripe-theme', '6.0.x-dev'],
+            ['myaccount/silverstripe-somemodule', 'mybranch', ['silverstripe/cms' => '^6'], 'silverstripe-recipe', '6.0.x-dev'],
+            ['myaccount/silverstripe-somemodule', 'mybranch', ['silverstripe/admin' => '^3'], 'silverstripe-vendormodule', '6.0.x-dev'],
             ['myaccount/silverstripe-somemodule', '4', ['silverstripe/framework' => '^6'], 'silverstripe-vendormodule', '6.x-dev'],
             ['myaccount/silverstripe-somemodule', '4', ['silverstripe/framework' => '^6'], 'package', ''],
             ['myaccount/silverstripe-somemodule', '4', ['silverstripe/framework' => '^6'], '', ''],
             ['myaccount/silverstripe-somemodule', '4', [], '', ''],
             // // recipe-plugin and vendor-plugin do not override framework
-            ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/recipe-plugin' => '^2', 'silverstripe/framework' => '^6'], 'silverstripe-vendormodule', '6.x-dev'],
-            ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/vendor-plugin' => '^2', 'silverstripe/framework' => '^6'], 'silverstripe-vendormodule', '6.x-dev'],
+            ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/recipe-plugin' => '^2', 'silverstripe/framework' => '^6'], 'silverstripe-vendormodule', '6.0.x-dev'],
+            ['myaccount/silverstripe-admin', 'mybranch', ['silverstripe/vendor-plugin' => '^2', 'silverstripe/framework' => '^6'], 'silverstripe-vendormodule', '6.0.x-dev'],
         ];
     }
 
