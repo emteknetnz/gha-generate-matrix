@@ -2299,4 +2299,80 @@ class JobCreatorTest extends TestCase
         ];
         $this->assertSame($expected, $actual);
     }
+
+    public function providePhpFallbackDoorman(): array
+    {
+        return [
+            'php81' => [
+                'php' => '^8.1',
+                'exception' => false,
+                'expected' => [
+                    '8.1 prf-low mariadb phpunit all',
+                    '8.2 mysql80 phpunit all',
+                    '8.3 mysql84 phpunit all',
+                ],
+            ],
+            'php83' => [
+                'php' => '^8.3',
+                'exception' => false,
+                'expected' => [
+                    '8.3 prf-low mariadb phpunit all',
+                    '8.3 mysql80 phpunit all',
+                    '8.4 mysql84 phpunit all',
+                ],
+            ],
+            'none' => [
+                'php' => 'none',
+                'exception' => true,
+                'expected' => null,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providePhpFallbackDoorman
+     */
+    public function testPhpFallbackDoorman(string $php, bool $exception, ?array $expected): void
+    {
+        if (!function_exists('yaml_parse')) {
+            $this->markTestSkipped('yaml extension is not installed');
+        }
+        if ($exception) {
+            $this->expectException(Exception::class);
+        }
+        try {
+            $yml = implode("\n", [
+                <<<EOT
+                composer_install: false
+                endtoend: true
+                js: true
+                phpcoverage: false
+                phpcoverage_force_off: false
+                phplinting: true
+                phpunit: true
+                doclinting: true
+                phpunit_skip_suites: ''
+                dynamic_matrix: true
+                simple_matrix: false
+                github_repository: 'silverstripe/doorman'
+                github_my_ref: '5'
+                parent_branch: ''
+                EOT
+            ]);
+            $creator = new JobCreator();
+            $creator->composerJsonPath = '__composer.json';
+            $this->writeComposerJson(['php' => $php]);
+            $creator->githubRepository = 'silverstripe/doorman';
+            $creator->repoName = 'doorman';
+            $creator->branch = '5';
+            $creator->parseRepositoryMetadata();
+            $json = json_decode($creator->createJson($yml));
+            $actual = array_map(fn($job) => $job->name, $json->include);
+            $this->assertSame($expected, $actual);
+        } finally {
+            if (file_exists('__composer.json')) {
+                unlink('__composer.json');
+            }
+        }
+    }
 }
