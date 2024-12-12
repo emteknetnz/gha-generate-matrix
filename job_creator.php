@@ -368,7 +368,26 @@ class JobCreator
     private function getListOfPhpVersionsByBranchName(): array
     {
         $branch = $this->getInstallerBranch();
-        return MetaData::PHP_VERSIONS_FOR_CMS_RELEASES[$branch] ?? MetaData::PHP_VERSIONS_FOR_CMS_RELEASES['4'];
+        if (isset(MetaData::PHP_VERSIONS_FOR_CMS_RELEASES[$branch])) {
+            return MetaData::PHP_VERSIONS_FOR_CMS_RELEASES[$branch];
+        }
+        // Fallback to using a CMS major based on the version of PHP in composer.json
+        $json = $this->getComposerJsonContent();
+        if ($json) {
+            $php = $json->require->php ?? null;
+            $php = str_replace('^', '', $php);
+            $cmsMajors = array_keys(MetaData::PHP_VERSIONS_FOR_CMS_RELEASES);
+            $cmsMajors = array_filter($cmsMajors, fn($v) => !str_contains($v, '.'));
+            $cmsMajors = array_reverse($cmsMajors);
+            foreach ($cmsMajors as $cmsMajor) {
+                $phpVersions = MetaData::PHP_VERSIONS_FOR_CMS_RELEASES[$cmsMajor];
+                if (in_array($php, $phpVersions)) {
+                    return $phpVersions;
+                }
+            }
+        }
+        // Fallback to the PHP versions allowed for the lowest supported major release line
+        return MetaData::PHP_VERSIONS_FOR_CMS_RELEASES[MetaData::LOWEST_SUPPORTED_CMS_MAJOR];
     }
 
     /**
