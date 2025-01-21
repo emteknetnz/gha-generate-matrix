@@ -1144,6 +1144,103 @@ class JobCreatorTest extends TestCase
                     ],
                 ]
             ],
+            // test for graphql 5.2 which is used in both installer 5.3 and installer 5.2
+            // it should use installer 5.3.x-dev
+            [
+                implode("\n", [
+                    $this->getGenericYml(),
+                    <<<EOT
+                    github_repository: 'myaccount/silverstripe-graphql'
+                    github_my_ref: '5.2'
+                    parent_branch: ''
+                    EOT
+                ]),
+                false,
+                false,
+                false,
+                [
+                    [
+                        'installer_version' => '5.3.x-dev',
+                        'php' => '8.1',
+                        'db' => DB_MYSQL_57,
+                        'composer_require_extra' => '',
+                        'composer_args' => '--prefer-lowest',
+                        'name_suffix' => '',
+                        'phpunit' => 'true',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'false',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.1 prf-low mysql57 phpunit all',
+                    ],
+                    [
+                        'installer_version' => '5.3.x-dev',
+                        'php' => '8.2',
+                        'db' => DB_MARIADB,
+                        'composer_require_extra' => '',
+                        'composer_args' => '',
+                        'name_suffix' => '',
+                        'phpunit' => 'true',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'false',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.2 mariadb phpunit all',
+                    ],
+                    [
+                        'installer_version' => '5.3.x-dev',
+                        'php' => '8.3',
+                        'db' => DB_MYSQL_80,
+                        'composer_require_extra' => '',
+                        'composer_args' => '',
+                        'name_suffix' => '',
+                        'phpunit' => 'true',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'false',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.3 mysql80 phpunit all',
+                    ],
+                    [
+                        'installer_version' => '5.3.x-dev',
+                        'php' => '8.3',
+                        'db' => DB_MYSQL_84,
+                        'composer_require_extra' => '',
+                        'composer_args' => '',
+                        'name_suffix' => '',
+                        'phpunit' => 'true',
+                        'phpunit_suite' => 'all',
+                        'phplinting' => 'false',
+                        'phpcoverage' => 'false',
+                        'endtoend' => 'false',
+                        'endtoend_suite' => 'root',
+                        'endtoend_config' => '',
+                        'endtoend_tags' => '',
+                        'js' => 'false',
+                        'doclinting' => 'false',
+                        'needs_full_setup' => 'true',
+                        'name' => '8.3 mysql84 phpunit all',
+                    ],
+                ]
+            ],
         ];
     }
 
