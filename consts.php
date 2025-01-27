@@ -417,7 +417,11 @@ const INSTALLER_TO_REPO_MINOR_VERSIONS = [
         'silverstripe-environmentcheck' => '3.0',
         'silverstripe-externallinks' => '3.2',
         'silverstripe-fluent' => '7.1',
-        'silverstripe-graphql' => '5.2',
+        // GraphQL is commented out here to ensure that it's installed using
+        // installer 5.3, instead of installer 5.2
+        // This is done because otherwise an elemental behat test will fail because
+        // it needs a fix which is in framework 5.3
+        // 'silverstripe-graphql' => '5.2',
         'silverstripe-gridfield-bulk-editing-tools' => '4.0',
         'silverstripe-gridfieldextensions' => '4.0',
         'silverstripe-gridfieldqueuedexport' => '3.2',

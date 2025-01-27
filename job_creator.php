@@ -56,7 +56,8 @@ class JobCreator
             foreach (INSTALLER_TO_REPO_MINOR_VERSIONS[$installerVersion] as $_repo => $_repoVersions) {
                 $repoVersions = is_array($_repoVersions) ? $_repoVersions : [$_repoVersions];
                 foreach ($repoVersions as $repoVersion) {
-                    if ($this->repoName === $_repo && $repoVersion === preg_replace('#-release$#', '', $this->branch)) {
+                    $thisBranch = preg_replace('#-release$#', '', $this->branch);
+                    if ($this->repoName === $_repo && $thisBranch === $repoVersion) {
                         return $installerVersion . '.x-dev';
                     }
                 }
@@ -374,7 +375,7 @@ class JobCreator
         // Fallback to using a CMS major based on the version of PHP in composer.json
         $json = $this->getComposerJsonContent();
         if ($json) {
-            $php = $json->require->php ?? null;
+            $php = $json->require->php ?? '';
             $php = str_replace('^', '', $php);
             $cmsMajors = array_keys(MetaData::PHP_VERSIONS_FOR_CMS_RELEASES);
             $cmsMajors = array_filter($cmsMajors, fn($v) => !str_contains($v, '.'));
