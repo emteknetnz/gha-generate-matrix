@@ -687,6 +687,7 @@ class JobCreator
                 'phpunit' => false,
             ]);
             $this->convertMatrixValuesToStrings($matrix);
+            $matrix['include'][0]['name'] = 'null tests';
         }
 
         // ensure there are no duplicate jobs
