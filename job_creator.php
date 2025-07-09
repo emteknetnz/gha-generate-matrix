@@ -682,8 +682,8 @@ class JobCreator
 
         // If matrix is empty, create a null job. Use case for this is something like silverstripe/startup-theme
         // which has nothing to test that we still want to trigger the tag-patch-release action from ci
-        if (empty($matrix['include'])) {
-            $matrix['include'][] = $matrix['include'][] = $this->createJob(0, [
+        if (empty($matrix['include']) && $dynamicMatrix) {
+            $matrix['include'][] = $this->createJob(0, [
                 'phpunit' => false,
             ]);
             $this->convertMatrixValuesToStrings($matrix);
